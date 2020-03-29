@@ -1,0 +1,161 @@
+@import "main";
+
+#mainHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(62,100,130, 0.2);
+  //box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  font-family: 'interSemiBold', arial;
+  .container {
+    width: 100%;
+  }
+
+  .navbar-regular {
+    display: flex;
+    padding: 1vh 5vh;
+    //   flex-direction: row-reverse;
+    justify-content: space-between;
+
+    .logo {
+
+      .large-logo-white {
+        display: none;
+      }
+      .large-logo-black {
+        display: none;
+      }
+      img {
+        // display: none;
+        height: 10vh;
+      }
+
+
+    }
+
+    // Hanburger menu
+    .navbar-toggle {
+      align-items: center; // Vertical align center
+      //display: flex;
+      display: none;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 5vh;
+    }
+  }
+
+  .navbar {
+    display: none;
+  }
+
+  .navbar-highlight {
+    background-color: #f8f8f8;
+    z-index: 5000;
+    transition: background-color 2s ease-in-out, color 1s ease-in-out;
+    .about, .contact {
+      color: $button-color;
+      transition: color 1s ease-in-out;
+    }
+    .login, .signup {
+      background-color: rgba( $button-color, .5);
+      color: $primary-color;
+      transition: background-color 2s ease-in-out, color 1s ease-in-out;
+    }
+
+    .large-logo-white {
+      display: none;
+      transition: dispaly 2s ease-out;
+    }
+
+
+    .large-logo-black {
+      display: block !important;
+      transition: dispaly 1s ease-in;
+    }
+  }
+
+} // mainHeader
+
+
+@media only screen and (max-width: 999px) {
+
+  #mainHeader {
+    .main-nav {
+      display: none;
+      position: absolute;
+      padding: 10vh 1vh;
+      top: 12vh;
+      left: 10px;
+      right: 10px;
+      height: 200px;
+      background-color: rgba(white, 0.95);
+      color: black;
+      // height: auto;
+      a {
+        font: 9.1vh / 8vh "interSemiBold" , arial ;
+        text-align: center;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+
+  #mainHeader {
+
+
+    .navbar-regular {
+      .logo {
+        .large-logo-white {
+          display: inline;
+        }
+        .large-logo-mobile {
+          display: none;
+        }
+      }
+      .navbar-toggle {
+        display: none;
+      }
+
+
+
+      .main-nav {
+        display: none;
+        //display: flex;
+        align-items: center;
+        .nav-link {
+          font: 2.1vh interSemiBold, arial;
+          margin: 2vh;
+          padding: 1vh 4vh;
+          color: white;
+          // transition: color 4s ease-in-out;
+          text-align: center;
+          @include underline();
+          cursor: pointer;
+          height: 20px;
+          &::after {
+            background-color: rgba($highlight-color, 1);
+          }
+        }
+        .button {
+          // border: 1px solid white;
+          border-radius: 25px;
+          background-color: $primary-shade-color;
+          color: $button-color;
+          &:hover {
+            background-color: rgba($highlight-color, .8);
+            transition: background-color .5s ease-in-out, color  .5s ease-in-out;
+            // color: white;
+          }
+          &::after {
+            background-color: rgba($highlight-color, 0.0);
+          }
+        }
+      }
+    }
+  }
+
+}

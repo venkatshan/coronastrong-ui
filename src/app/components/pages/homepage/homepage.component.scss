@@ -1,0 +1,236 @@
+@import "main";
+
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    height: 0vh;
+  }
+  to {
+    opacity: 1;
+    height: 25vh;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    height: 25vh;
+  }
+  to {
+    opacity: 0;
+    height: 0vh;
+  }
+}
+
+
+
+.fade-out {
+  animation: .51s linear fade-out !important;
+}
+
+#line-chart {
+  background-color: cornsilk;
+  width: 100%;
+  height: 100vh;
+  display: none;
+
+}
+
+#page-content {
+  width: 100%;
+}
+
+
+
+
+.section-main-content {
+
+  background: center / cover  linear-gradient(270deg, rgba( #BEA994, 0.7), rgba( #BEA994, 0.5)) repeat;
+        //center / contain repeat url('/assets/images/backgrounds/coronavirus-mobile.png');
+  color: white;
+  padding: 0vh 1vh 0 $left-padding;
+
+  .section-top {
+    padding-top: 4.5vh;
+    font: min(6vw, 30px) / min(6.2vw, 30px) 'Poppins-Bold', 'intersBold', sans-serif;
+    text-align: right;
+  }
+
+  //height: 90vh;
+  .section-title {
+    font: 6vh / 8vh 'Poppins-Bold', 'intersBold', sans-serif;
+    margin: 5vh 0vh .2vh 0;
+    text-align: center;
+  }
+
+  .section-list {
+    font: 2.6vh / 3vh 'Poppins-Regular', 'myriadReg', sans-serif;
+  }
+
+  .state-list-top-now {
+    display: flex;
+    font: 2vh / 2.3vh 'Poppins-Regular', 'myriadReg', sans-serif;
+    margin: 0.5vw 0vh 1vw 0;
+    justify-content: center;
+    align-items: center;
+    .hmc-desc {
+      margin-left: 2vh;
+    }
+    img {
+      height: 6vh;
+    }
+    small {
+      font-size: 1vh;
+      //display: block;
+    }
+  }
+
+  .state-list-header {
+    font: 2vh / 2.3vh 'Poppins-Regular', 'myriadReg', sans-serif;
+    margin: 0.5vw 0vh 1vw 0;
+    padding: 0.5vw 0;
+    grid-template-columns: 4fr .5fr 1.5fr 1.5fr 1fr;
+    display: grid;
+    background: center / cover linear-gradient(90deg, rgba( #035678, 0.5), rgba( #0094B0, 0.8)) ;
+    span {
+      //background: center / cover linear-gradient(90deg, rgba( #035678, 0.5), rgba( #0094B0, 0.8)) ;
+      padding: .3vh .3vh;
+      margin: 0 0vh;
+      cursor: pointer;
+    }
+    .counts {
+      text-align: right;
+      padding-right: 0.5vh;
+    }
+    .cluster_name {
+      padding-left: 2vh;
+
+    }
+    .infected_count {
+      //min-width: 10vh;
+      //text-align: center;
+    }
+    .test_count {
+      //min-width: 10vh;
+      //text-align: center;
+    }
+    .death_count {
+      min-width: 3vh;
+      //text-align: center;
+    }
+    #death-sort {
+      display: none;
+    }
+  }
+  .state-list-tip {
+    font: 1.7vh / 1.8vh 'Poppins-Regular', 'myriadReg', sans-serif;
+    //margin: 0.5vw 0vh 1vw 0;
+    padding: 0vw 2vh;
+    text-align: center;
+  }
+  .state-list-entry {
+    font: 2vh / 2.3vh 'Poppins-Regular', 'myriadReg', sans-serif;
+    margin: 0.3vw 0vh 3px 0;
+    grid-template-columns: 4fr 1.5fr 1.5fr .4fr;
+    grid-template-rows: 3vh auto;
+    display: grid;
+
+    border-bottom: 1px solid rgba( #035678 , .5) ;
+    //border-top: 1px solid #035678;
+    //background: center / cover linear-gradient(90deg, rgba( #035678, 0.5), rgba( #0094B0, 0.1)) ;
+    span {
+      background: center / cover linear-gradient(90deg, rgba( #035678, 0.3), rgba( #0094B0, 0.1)) ;
+      padding: .3vh .4vh .3vh .2vh;
+      margin: 0 .1vh 0 .4vh;
+      border-radius: 2px;
+    }
+    .cluster_name {
+      cursor: pointer;
+    }
+    .infected_count {
+      background: center / cover linear-gradient(90deg, rgba( #035678, 0.3), rgba( #0094B0, 0.3)) ;
+      min-width: 4vh;
+      text-align: right;
+    }
+
+    .test_count {
+      background: center / cover linear-gradient(90deg, rgba( #035678, 0.3), rgba( #0094B0, 0.3)) ;
+      min-width: 4vh;
+      text-align: right;
+    }
+    .death_count {
+      background: center / cover linear-gradient(90deg, rgba( #035678, 0.3), rgba( #0094B0, 0.3)) ;
+      min-width: 5vh;
+      text-align: right;
+    }
+
+    .state-list-entry-details {
+      grid-column: 1 / span 3;
+      padding: 0 2vh;
+      font: 2vh / 2.1vh 'Poppins-ExtraLight', 'interSemiBold', sans-serif;
+      animation: .51s linear fade-in;
+      //display: flex;
+      .barchart-entry {
+        display: grid;
+        margin: 1vh 0vh;
+        //height: 5vh;
+        grid-template-columns: max-content auto;
+        .bardate {
+          background-color: #035678;
+          padding: 0.2vh .5vh;
+
+          //width: 100%;
+        }
+        .barchart-bar {
+          text-align: right;
+          padding-right: 1vh;
+          //margin: 1vh 0;
+          background-color: #035678;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .percentage_val {
+
+          //width: 100%;
+        }
+      }
+      .barchart-bar-double {
+        background: linear-gradient(90deg, rgba(red, .6),  #035678);
+      }
+    }
+  }
+  .state-list-update {
+
+    font: 2vh / 2.3vh 'Poppins-Regular', 'myriadReg', sans-serif;
+    margin: 0.3vw 0vh 3px 0;
+    padding: 0;
+    background: center / cover linear-gradient(90deg, rgba( #035678, 0.3), rgba( #0094B0, 0.3)) ;
+    text-align: center;
+  }
+  .btn-sign-up {
+    border-radius: 5px;
+    color: white;
+    font: 2vh / 22px 'Poppins-Regular', 'interSemiBold', sans-serif;
+  }
+
+
+} // section-main-content
+
+
+@media screen   and (min-device-width: 1200px)  {
+  .section-list {
+    margin: 0 20%;
+  }
+
+  .line-chart {
+    width: 100%;
+    height: 20vh !important;
+  }
+  .state-list-header {
+    #death-sort {
+      display: inline !important;
+      //padding-left: 30vh;
+    }
+  }
+}

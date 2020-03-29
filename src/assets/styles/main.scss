@@ -1,0 +1,35 @@
+@import "abstracts/variables";
+@import "abstracts/functions";
+@import "abstracts/mixins";
+@import "abstracts/placeholders";
+
+@import "base/reset";
+@import "base/typography";
+
+
+html {
+  background-color: black;
+}
+body {
+  margin: 0;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+a {
+  text-decoration: none;
+}
+h1{
+  margin: 0;
+  padding: 0;
+}
+
+

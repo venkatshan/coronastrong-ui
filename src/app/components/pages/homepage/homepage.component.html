@@ -1,0 +1,62 @@
+<div id="page-content">
+  <div class="section-main-content">
+    <div class="section-top" ><span>{{ currentEnv.website | lowercase}}</span></div>
+    <h1 class="section-title "><span *ngIf="clusterTotal >= 0">
+<!--      Total : {{clusterTotal | number}}-->
+    </span></h1>
+
+    <div class="section-list">
+
+      <!--      <div class="state-list-top-now navbar-highlight" >-->
+      <!--        <span> <a class="hmc" href="https://www.ConvenientCareNow.com" target="_blank">-->
+      <!--          <img  src="/assets/images/vendor/hackensackmeridian.png"/>-->
+      <!--        </a> </span>-->
+      <!--        <span class="hmc-desc">NJ online-->
+      <!--         DR visit for $20. code HMH20 .-->
+      <!--          <small>*We are not affiliated with HMC</small></span>-->
+      <!--      </div>-->
+      <canvas id="line-chart" height="300px" ></canvas>
+      <div class="state-list-tip" *ngIf="chartEnabled == true" >
+        <span  class="cluster_name"> *** Interactive chart. Click on state legend to toggle </span>
+      </div>
+      <div class="state-list-header" >
+        <span (click)="sort('cluster_name')" class="cluster_name">State </span>
+        <span (click)="sort('cluster_name')"><i class="fas" [ngClass]="fieldsort.cluster_name"> </i></span>
+        <span (click)="sort('infected_count')" class="counts infected_count">+ve <i class="fas " [ngClass]="fieldsort.infected_count"></i></span>
+          <span (click)="sort(currentEnv.column_config['2'].column_name)"
+                class="counts test_count">{{currentEnv.column_config['2'].title}} <i class="fas " [ngClass]="fieldsort[currentEnv.column_config['2'].column_name]"></i></span>
+        <span (click)="sort('death_count')" class="counts death_count">Fatal<i id="death-sort" class="fas " [ngClass]="fieldsort.death_count"></i></span>
+      </div>
+      <div class="state-list-tip" *ngIf="chartEnabled == true" >
+        <span  class="cluster_name"> *** Select state to see daily chart. </span>
+      </div>
+      <div class="state-list-entry" *ngFor="let stl of this.clusterCountList">
+        <span  (click)="toggleDetail(stl.cluster_name)" class="cluster_name">{{ stl.cluster_name}}
+
+        </span>
+
+        <span class="infected_count">{{stl.infected_count | number}} </span>
+        <span class="test_count">{{stl[currentEnv.column_config['2'].column_name] | number}} </span>
+        <span class="death_count">{{stl.death_count | number}} </span>
+        <div id="{{stl.cluster_name}}"  class="state-list-entry-details" *ngIf="checkDetailDisplay( stl.cluster_name )">
+
+
+            <div class="barchart-entry"*ngFor="let x  of getClusterValues(stl.cluster_name)" >
+                  <span class="bardate">{{x.date}}</span>
+              <div class="barchart-bar" [ngClass]="{'barchart-bar-double' : x.doubled }" [style.width]="x.bar_percentage + '%'">
+                <span class="percentage_space"></span>
+                <span class="percentage_val" *ngIf="x.bar_percentage > 30 && x.dayToDayPercentage > 0">+{{x.dayToDayPercentage}}%</span>
+
+                <span>{{x.infected_count}}</span></div>
+            </div>
+
+        </div>
+      </div>
+      <div class="state-list-update"><a href="#" class="btn-sign-up button " data-wow-delay="0.6s">Last Updated : {{ lastUpdatedTime }}</a></div>
+      <div class="state-list-update"><a href="email:admin@{{currentEnv.website}}" class="btn-sign-up button" data-wow-delay="0.6s">Contact us : admin@{{currentEnv.website}}</a></div>
+    </div>
+
+
+
+  </div>
+</div>
