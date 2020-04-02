@@ -1,3 +1,10 @@
+git clone https://github.com/venkatshan/coronastrong-ui
+
+npm install
+
+npm start
+
+
 # CoronastrongUi
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.21.
