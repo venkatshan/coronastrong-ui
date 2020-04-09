@@ -19,6 +19,14 @@ export class HomepageComponent implements OnInit, AfterViewInit {
   clusterTotal = -1;
   lastUpdatedTime = '';
 
+  sliderVal:number; 
+
+  getSliderValue(event) {
+    this.sliderVal = Number(event.target.value); // by default value is string
+ }
+
+
+
   fieldsort = { cluster_name : 'fa-sort', infected_count : 'fa-sort-down',
     death_count: 'fa-sort', test_count: 'fa-sort', foreigners_count: 'fa-sort' };
   currentEnv = env[env.current_env];
@@ -251,7 +259,16 @@ export class HomepageComponent implements OnInit, AfterViewInit {
         // }
         this.initializedClusters.push(cluster);
       }
-      return r[0].data;
+
+      // condition required to avoid .slice(0, 0)
+      // condition if slice number greater than length of array, slice 1 less than total length of array, so there is at least 1 day shown
+      if (this.sliderVal == 0)
+        return r[0].data;
+      else if (this.sliderVal >= r[0].data.length)
+        return r[0].data.slice(0, (r[0].data.length - 1) * -1);
+      else {
+        return r[0].data.slice(0, this.sliderVal*-1);
+      }
     }
     return [];
   }

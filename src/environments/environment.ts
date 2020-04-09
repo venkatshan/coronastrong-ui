@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  current_env: 'INDIA',
+  current_env: 'US',
   auth: {
     CLIENT_ID: 'wEH0EDSdhD2LKBmw4yQF7qKZwe7ncPi1',
     CLIENT_DOMAIN: 'dev-tuition-relief.auth0.com',
