@@ -42,14 +42,17 @@
         </span>
 
         <span class="infected_count">{{stl.infected_count | number}} </span>
-        <span class="test_count">{{stl[currentEnv.column_config['2'].column_name] | number}} </span>
+        <span *ngIf="stl[currentEnv.column_config['2'].column_name] !== 0" class="test_count">{{stl[currentEnv.column_config['2'].column_name] | number}} </span>
+        <span *ngIf="stl[currentEnv.column_config['2'].column_name] === 0" class="test_count">NA</span>
         <span class="death_count">{{stl.death_count | number}} </span>
 
         <div id="{{stl.cluster_name}}"  class="state-list-entry-details" *ngIf="checkDetailDisplay( stl.cluster_name )">
         
           <!-- to be safe, max is set to 25 since we are assured that data will be at months time-->
-          <input id="myRange" type="range" value="10" min="1" max="25" (change)="getSliderValue($event)" (oninput)="getSliderValue($event)"  />
-
+          <div class="range-container">
+              <input class="slider" type="range" [value]="stl.displayDaysCount" min="1" max="{{stl.historySize}}"
+                 (input)="getSliderValue($event, stl.cluster_name)"   />
+          </div>
           <div class="barchart-entry"*ngFor="let x  of getClusterValues(stl.cluster_name)" >
             <span class="bardate">{{x.date}}</span>
             <div class="barchart-bar" [ngClass]="{'barchart-bar-double' : x.doubled }" [style.width]="x.bar_percentage + '%'">
@@ -57,8 +60,6 @@
             <span class="percentage_val" *ngIf="x.bar_percentage > 30 && x.dayToDayPercentage > 0">+{{x.dayToDayPercentage}}%</span>
             <span>{{x.infected_count}}</span></div>
           </div>
-            
-
 
         </div>
       </div>

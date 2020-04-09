@@ -60,7 +60,7 @@ export const environment = {
       serviceHistoryURI: 'https://bgctw6g195.execute-api.us-east-1.amazonaws.com/PROD/clusters'
     },
     column_config: {
-      2 : { column_name: 'test_count', title: 'Test' }
+      2 : { column_name: 'recovered_count', title: 'Recoverd' }
     },
     chart: {
       cluster: ['USA', 'New Jersey', 'New York', 'Washington', 'California', 'Florida', 'Louisiana', 'Illinois', 'Texas', 'Michigan' ],

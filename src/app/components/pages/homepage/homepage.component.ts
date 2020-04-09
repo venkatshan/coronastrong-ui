@@ -1,8 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {CoronaCountServicesService} from '../../../services/corona-count-services.service';
-﻿import { from } from 'rxjs/observable/from';
-import { groupBy, mergeMap, toArray } from 'rxjs/operators';
-import {environment as env} from  '../../../../environments/environment';
+import {environment as env} from '../../../../environments/environment';
 
 
 // import * as d3 from './d3.min.js';
@@ -13,22 +11,14 @@ import * as Chart from './chart.js';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss']
 })
-export class HomepageComponent implements OnInit, AfterViewInit {
+export class HomepageComponent implements OnInit {
 
   clusterCountList: any[];
   clusterTotal = -1;
   lastUpdatedTime = '';
 
-  sliderVal:number; 
-
-  getSliderValue(event) {
-    this.sliderVal = Number(event.target.value); // by default value is string
- }
-
-
-
   fieldsort = { cluster_name : 'fa-sort', infected_count : 'fa-sort-down',
-    death_count: 'fa-sort', test_count: 'fa-sort', foreigners_count: 'fa-sort' };
+  death_count: 'fa-sort', test_count: 'fa-sort', foreigners_count: 'fa-sort' };
   currentEnv = env[env.current_env];
   chartEnabled = env.chart_enabled_envs.indexOf(env.current_env) !== -1;
   // Active cluster details
@@ -37,21 +27,23 @@ export class HomepageComponent implements OnInit, AfterViewInit {
   initializedClusters = [];
 
   clusterValues = [{ cluster_name: this.currentEnv.top_cluster ,
-    data : [{date: '3/15', infected_count: 300, bar_percentage: 60, dayToDayPercentage: 0, doubled: false}]}];
+    data : [{date: '3/15', infected_count: 300, bar_percentage: 60, dayToDayPercentage: 0,
+      doubled: false}], displayStart: 0, displayEnd: -1}];
 
   constructor( private coronaCountService: CoronaCountServicesService ) { }
 
-
-  ngAfterViewInit(): void {
-
+  getSliderValue(event, cluster) {
+    const curcl = this.getCluster(cluster);
+    curcl.displayDaysCount = curcl.historySize - +event.target.value;
   }
+
   chartTotals(): void {
     // console.log ( this.clusterValues );
     const textColor = 'black';
     const cl = this.currentEnv.chart.cluster;
-    const visibleList = this.currentEnv.chart.visibleList
+    const visibleList = this.currentEnv.chart.visibleList;
     const stateab = this.currentEnv.chart.stateAbrev;
-    cl.forEach(l => this.getClusterValues( l ) );
+    cl.forEach(l => this.initClusterValues( l ) );
 
     const colorss = [ '#EC7063', '#C0392B', '#5DADE2', '#E67E22', '#EC7063', 'orange', 'orange', 'orange', 'orange', 'orange'];
     const colorsd = ['IndianRed', 'Crimson', 'DeepPink', 'MediumVioletRed', 'DarkOrange', 'Gold', 'Violet',
@@ -59,7 +51,8 @@ export class HomepageComponent implements OnInit, AfterViewInit {
     const colors = ['Steelblue', 'DarkTurquoise', 'LightSeaGreen', '#D8E622',  'DarkOrchid', 'Aqua', 'SeaGreen',
       'RosyBrown', 'Crimson', 'Orange'];
 
-    const drawClusters = this.clusterValues.filter( l => cl.indexOf( l.cluster_name.replace('US-', '')) >= 0)
+    const drawClusters = this.clusterValues.filter( l =>
+      cl.indexOf( l.cluster_name.replace('US-', '')) >= 0);
 
     const labelList = drawClusters[0].data.map(l => l.date.replace('/2020', '') ).reverse();
     const dataSets = drawClusters.map ( (l, i) => {
@@ -81,7 +74,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
     // console.log( "ASASASSASAS" );
     // console.log( dataSets );
 
-    const v = new Chart(document.getElementById("line-chart"), {
+    const v = new Chart(document.getElementById('line-chart'), {
       type: 'line',
       data: {
         labels: labelList,
@@ -92,17 +85,17 @@ export class HomepageComponent implements OnInit, AfterViewInit {
           labels: {
             fontColor: textColor,
             fontSize: 12
-            ,fontFamily: 'Poppins-Regular, intersBold, sans-serif'
+            , fontFamily: 'Poppins-Regular, intersBold, sans-serif'
           }
-          ,position: 'bottom'
+          , position: 'bottom'
         },
         title: {
           display: false,
           text: 'Interactive - Click on legend to toggle'
-          ,fontColor: textColor
-          ,fontFamily: 'Poppins-Regular, intersBold, sans-serif'
-          ,fontSize: 8
-          ,position: 'bottom'
+          , fontColor: textColor
+          , fontFamily: 'Poppins-Regular, intersBold, sans-serif'
+          , fontSize: 8
+          , position: 'bottom'
         },
         scales: {
           xAxes: [{
@@ -126,11 +119,11 @@ export class HomepageComponent implements OnInit, AfterViewInit {
     this.coronaCountService.getCount(this.currentEnv.corona_count.serviceURI).subscribe(resp => {
       this.clusterCountList =  resp.results;
 
-      //shift() returns first element from the list
+      // shift() returns first element from the list
       this.lastUpdatedTime = this.clusterCountList.filter( n => n.cluster_name === 'last_updated').shift().infected_count;
 
-      let ustotal = {cluster_name: this.currentEnv.fullName, infected_count: 0, death_count: 0, test_count: 0,
-        foreigners_count: 0, bar_percentage: 0};
+      const ustotal = {cluster_name: this.currentEnv.fullName, infected_count: 0, death_count: 0, test_count: 0,
+          foreigners_count: 0, bar_percentage: 0, recovered_count: 0};
       // Convert string to number and us total
       this.clusterCountList = this.clusterCountList.filter( n => n.cluster_name !== 'last_updated')
         .map( x => {
@@ -138,12 +131,14 @@ export class HomepageComponent implements OnInit, AfterViewInit {
               x.death_count = +x.death_count;
               x.test_count = +x.test_count;
               x.foreigners_count = +x.foreigners_count;
+              x.recovered_count = +x.recovered_count;
 
               // Country Totals
               ustotal.infected_count += x.infected_count;
               ustotal.death_count += x.death_count;
               ustotal.test_count  += x.test_count;
               ustotal.foreigners_count += x.foreigners_count;
+              ustotal.recovered_count += x.recovered_count;
 
               return x; });
 
@@ -151,7 +146,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
       // +n.infected_count - convert string to number
       this.clusterTotal = this.clusterCountList.map( n => +n.infected_count).reduce((a, b) =>  a + b, 0);
 
-      //Push Country total and sort the list
+      // Push Country total and sort the list
       this.clusterCountList.push(ustotal);
       this.clusterCountList = this.clusterCountList.sort((n1, n2) => {
             if ( n1.infected_count < n2.infected_count) { return 1; }
@@ -167,7 +162,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
         this.currentEnv.historyResource).subscribe(resp => {
           this.clusterValues = JSON.parse(resp.results[0].cluster_value).result;
 
-          const clValid = this.clusterValues.filter(f => f.cluster_name.indexOf('Princess') === -1).map(l => {
+          const clValid = this.clusterValues.map(l => {
             return l.data;
           });
           // Add history totals by date cumulative.
@@ -183,10 +178,13 @@ export class HomepageComponent implements OnInit, AfterViewInit {
           dateMap.forEach((v, k) => {
             dtList.push({date: k.replace('/2020', ''), infected_count: v, bar_percentage: 50});
           });
-          const uscl = {cluster_name: this.currentEnv.fullName, data: dtList};
+
+          const uscl = {cluster_name: this.currentEnv.fullName, data: dtList, displayStart:  10,
+                displayEnd:  30};
+
           this.clusterValues.push(uscl);
           this.toggleDetail(this.currentEnv.top_cluster_name);
-          setTimeout(() => this.chartTotals(), 50);
+          // setTimeout(() => this.chartTotals(), 50);
       });
     }
 
@@ -216,61 +214,73 @@ export class HomepageComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getClusterValues(cluster: string) {
+  initClusterValues(cluster: string) {
 
     // console.log (cluster);
     if ( env.chart_enabled_envs.indexOf(env.current_env ) === -1) {
       return [];
     }
     const r = this.clusterValues.filter ( x => x.cluster_name === this.currentEnv.prefix + cluster || x.cluster_name === cluster);
-
+    // console.log( r ) ;
     if ( r.length > 0) {
 
 
       // Initialize if not
-      if ( this.initializedClusters.indexOf( cluster ) === -1 ) {
+      if (this.initializedClusters.indexOf(cluster) === -1) {
         // Add current cluster to list
-        const curcl = this.clusterCountList.filter(f => f.cluster_name === cluster) [0];
-        const d = new Date()
+        const curcl = this.getCluster( cluster);
+
+        // Copy initial history based display start and end  from history list
+        curcl.displayStart = 0;
+        curcl.historySize = r[0].data.length;
+        curcl.displayDaysCount = r[0].data.length - 10;
+        console.log( curcl );
+        const d = new Date();
         curcl.date = (d).getMonth() + 1 + '/' + d.getDate();
-        r[0].data = r[0].data.filter( x => x.date !== curcl.date + '/2020');
-        r[0].data.push ( curcl );
+        r[0].data = r[0].data.filter(x => x.date !== curcl.date + '/2020');
+        r[0].data.push(curcl);
         const maxCount = Math.max.apply(this, r[0].data.map(x => +x.infected_count));
         let lstDblCnt = +r[0].data[0].infected_count;
         let lastCnt = +r[0].data[0].infected_count;
         r[0].data.forEach(x => {
           x.date = x.date.replace('/2020', '');
-          x.bar_percentage =  (+x.infected_count / maxCount ) * 100;
-          if ( +x.infected_count / lstDblCnt > 2 ) {
+          x.bar_percentage = (+x.infected_count / maxCount) * 100;
+          if (+x.infected_count / lstDblCnt > 2) {
             lstDblCnt = +x.infected_count;
             x.doubled = true;
           }
-          x.dayToDayPercentage = Math.round(( x.infected_count - lastCnt) * 100 / lastCnt );
+          x.dayToDayPercentage = Math.round((x.infected_count - lastCnt) * 100 / lastCnt);
           lastCnt = +x.infected_count;
           // console.log( x );
         });
         r[0].data = r[0].data.reverse();
-        // const len = r[0].data.length - 1;
-        // let lastVal = r[0].data[0].infected_count;
-        // for ( let x = 1 ; x < 5 && x < len; x ++ ) {
-        //   r[0].data[x].dayToDayPercentage = ( lastVal - r[0].data[x].infected_count ) * 100 / lastVal ;
-        //   console.log(cluster + ' '  + x  + ' ' + JSON.stringify(r[0].data[x]));
-        //   lastVal = r[0].data[x].infected_count;
-        // }
+
         this.initializedClusters.push(cluster);
       }
-
-      // condition required to avoid .slice(0, 0)
-      // condition if slice number greater than length of array, slice 1 less than total length of array, so there is at least 1 day shown
-      if (this.sliderVal == 0)
-        return r[0].data;
-      else if (this.sliderVal >= r[0].data.length)
-        return r[0].data.slice(0, (r[0].data.length - 1) * -1);
-      else {
-        return r[0].data.slice(0, this.sliderVal*-1);
-      }
+      return r;
     }
     return [];
+  }
+
+  getCluster( cluster: string ) {
+    return this.clusterCountList.filter(f => f.cluster_name === cluster) [0];
+  }
+
+
+  getClusterValues(cluster: string) {
+
+    const clusterVal = this.getCluster( cluster );
+    const clusterHistoryRet = this.initClusterValues(cluster);
+    // console.log( cluster );
+    // console.log( curClusters );
+    if ( clusterHistoryRet.length > 0 ) {
+      const clusterHistory = clusterHistoryRet[0];
+      const sz = clusterHistory.data.length - ( clusterHistory.data.length - clusterVal.displayDaysCount ) ;
+      return clusterHistory.data.slice(0, sz );
+    } else {
+      return [];
+    }
+
   }
 
   resetSort() {
