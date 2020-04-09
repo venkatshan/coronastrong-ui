@@ -19,7 +19,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
   clusterTotal = -1;
   lastUpdatedTime = '';
 
-  sliderVal:number; 
+  sliderVal:number;
 
   getSliderValue(event) {
     this.sliderVal = Number(event.target.value); // by default value is string
@@ -260,9 +260,10 @@ export class HomepageComponent implements OnInit, AfterViewInit {
         this.initializedClusters.push(cluster);
       }
 
-      // condition required to avoid .slice(0, 0)
-      // condition if slice number greater than length of array, slice 1 less than total length of array, so there is at least 1 day shown
-      if (this.sliderVal == 0)
+      // Condition 1: address on initial access when slider value undefined. Also address when slider placed to 0 (this avoids .slice(0, 0))
+      // Condition 2: if slice number greater than length of array, slice 1 less than total length of array, so there is at least 1 day shown
+      // Condition 3: take the value of slice to use
+      if (typeof this.sliderVal === 'undefined' || this.sliderVal === null || this.sliderVal == 0)
         return r[0].data;
       else if (this.sliderVal >= r[0].data.length)
         return r[0].data.slice(0, (r[0].data.length - 1) * -1);
