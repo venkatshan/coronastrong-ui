@@ -164,6 +164,14 @@
       text-align: right;
     }
 
+    .range-container {
+      width: 100%;
+      input {
+        width: 100%;
+        
+      }
+    }  
+
     .state-list-entry-details {
       grid-column: 1 / span 3;
       padding: 0 2vh;

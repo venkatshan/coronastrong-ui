@@ -36,9 +36,9 @@
 
         <span  class="cluster_name"> *** Select state to see daily chart. </span>
       </div>
+
       <div class="state-list-entry" *ngFor="let stl of this.clusterCountList">
         <span  (click)="toggleDetail(stl.cluster_name)" class="cluster_name">{{ stl.cluster_name}}
-
         </span>
 
         <span class="infected_count">{{stl.infected_count | number}} </span>
@@ -47,8 +47,10 @@
 
         <div id="{{stl.cluster_name}}"  class="state-list-entry-details" *ngIf="checkDetailDisplay( stl.cluster_name )">
         
-          <!-- to be safe, max is set to 25 since we are assured that data will be at months time-->
-          <input id="myRange" type="range" value="10" min="1" max="25" (change)="getSliderValue($event)" (oninput)="getSliderValue($event)"  />
+          <div class="range-container">
+            <!-- to be safe, max is set to 25 since we are assured that data will be at months time-->
+            <input class="slider" id="myRange" type="range" value="0" min="0" max="31" (change)="getSliderValue($event)" (oninput)="getSliderValue($event)"  />
+          </div>
 
           <div class="barchart-entry"*ngFor="let x  of getClusterValues(stl.cluster_name)" >
             <span class="bardate">{{x.date}}</span>
@@ -57,7 +59,7 @@
             <span class="percentage_val" *ngIf="x.bar_percentage > 30 && x.dayToDayPercentage > 0">+{{x.dayToDayPercentage}}%</span>
             <span>{{x.infected_count}}</span></div>
           </div>
-            
+          
 
 
         </div>

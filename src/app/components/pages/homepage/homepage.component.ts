@@ -15,14 +15,19 @@ import * as Chart from './chart.js';
 })
 export class HomepageComponent implements OnInit, AfterViewInit {
 
+
   clusterCountList: any[];
   clusterTotal = -1;
   lastUpdatedTime = '';
 
+  // obtain the default value from homepage.comp.html
   sliderVal:number;
 
+
   getSliderValue(event) {
-    this.sliderVal = Number(event.target.value); // by default value is string
+    this.sliderVal = Number(event.target.value); // by default, value is 
+    console.log(this.sliderVal)
+    
  }
 
 
@@ -122,6 +127,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
+    
 
     this.coronaCountService.getCount(this.currentEnv.corona_count.serviceURI).subscribe(resp => {
       this.clusterCountList =  resp.results;
@@ -218,6 +224,8 @@ export class HomepageComponent implements OnInit, AfterViewInit {
 
   getClusterValues(cluster: string) {
 
+    //console.log(this.sliderVal)
+
     // console.log (cluster);
     if ( env.chart_enabled_envs.indexOf(env.current_env ) === -1) {
       return [];
@@ -260,13 +268,19 @@ export class HomepageComponent implements OnInit, AfterViewInit {
         this.initializedClusters.push(cluster);
       }
 
-      // Condition 1: address on initial access when slider value undefined. Also address when slider placed to 0 (this avoids .slice(0, 0))
+      // Logic to resolve issue with max alue for slider. Need to re-assign max in html and then slider value
+      // Condition 1: address when slider placed to 0 (this avoids .slice(0, 0))
       // Condition 2: if slice number greater than length of array, slice 1 less than total length of array, so there is at least 1 day shown
       // Condition 3: take the value of slice to use
-      if (typeof this.sliderVal === 'undefined' || this.sliderVal === null || this.sliderVal == 0)
+      let ele = (<HTMLInputElement>(document.getElementById("myRange")))
+      
+      //ele.max = String(r[0].data.length);
+      this.sliderVal  = Number(ele.value);
+      if (this.sliderVal == 0)
         return r[0].data;
-      else if (this.sliderVal >= r[0].data.length)
-        return r[0].data.slice(0, (r[0].data.length - 1) * -1);
+      // may not need to check this logic
+      // else if (this.sliderVal >= r[0].data.length)
+      //   return r[0].data.slice(0, (r[0].data.length - 1) * -1);
       else {
         return r[0].data.slice(0, this.sliderVal*-1);
       }
