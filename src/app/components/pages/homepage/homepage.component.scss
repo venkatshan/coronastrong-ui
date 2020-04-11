@@ -165,13 +165,89 @@
     }
     .range-container {
       width: 100%;
-      input {
+      grid-column: 1 / span 3;
+      display: grid;
+      grid-template-columns: 1fr 8fr 1fr;
+      .date-start {
+        grid-column: 1;
+        margin-top: 5px;
+      }
+      .slider-container {
         width: 100%;
+        grid-column: 2;
+      }
+      input[type=range] {
+        box-sizing: border-box;
+        appearance: none;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+        border: 0;
+        border-radius: 1px;
+        outline: none;
+        background: linear-gradient(grey, grey) no-repeat center;
+        /* Use a linear gradient to generate only the 2px height background */
+        background-size: 100% 10px;
+        pointer-events: none;
 
+        &:active,
+        &:focus {
+          outline: none;
+        }
+
+        &::-webkit-slider-thumb {
+          height: 28px;
+          width: 18px;
+          border-radius: 8px;
+          background-color: #fff;
+          position: relative;
+          margin: 5px 0;
+          /* Add some margin to ensure box shadow is shown */
+          cursor: pointer;
+          appearance: none;
+          pointer-events: all;
+          box-shadow: 0 1px 4px 0.5px rgba(0, 0, 0, 0.25);
+          &::before {
+            content: ' ';
+            display: block;
+            position: absolute;
+            top: 13px;
+            left: 100%;
+            width: 2000px;
+            height: 2px;
+          }
+        }
+      }
+
+      .multi-range {
+        position: relative;
+        height: 30px;
+        input[type=range] {
+          position: absolute;
+
+          &:nth-child(1) {
+            &::-webkit-slider-thumb::before {
+              background-color: purple;
+            }
+          }
+
+          &:nth-child(2) {
+            background: none;
+
+            &::-webkit-slider-thumb::before {
+              background-color: grey;
+            }
+          }
+        }
+      }
+
+      .date-end {
+        grid-column: 3;
+        margin-top: 5px;
       }
     }
     .state-list-entry-details {
-      grid-column: 1 / span 3;
+      grid-column: 1 / span 4;
       padding: 0 2vh;
       font: 2vh / 2.1vh 'Poppins-ExtraLight', 'interSemiBold', sans-serif;
       animation: .51s linear fade-in;

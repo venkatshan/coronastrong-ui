@@ -50,8 +50,14 @@
         
           <!-- to be safe, max is set to 25 since we are assured that data will be at months time-->
           <div class="range-container">
-              <input class="slider" type="range" [value]="stl.displayDaysCount" min="1" max="{{stl.historySize}}"
-                 (input)="getSliderValue($event, stl.cluster_name)"   />
+            <span class="date-start">{{ getSliderValue(stl.cluster_name, stl.displayStart ) }}</span>
+              <div class="slider-container multi-range">
+                <input class="slider" type="range" [value]="stl.displayDaysCount" min="1" max="{{stl.historySize}}"
+                 (input)="stl.displayStart = $event.target.value"   />
+                <input class="slider slider2" type="range" [value]="stl.displayEnd" min="1" max="{{stl.historySize}}"
+                     (input)="stl.displayEnd = $event.target.value;"   />
+              </div>
+            <span class="date-end">{{ getSliderValue(stl.cluster_name, stl.displayEnd ) }}</span>
           </div>
           <div class="barchart-entry"*ngFor="let x  of getClusterValues(stl.cluster_name)" >
             <span class="bardate">{{x.date}}</span>

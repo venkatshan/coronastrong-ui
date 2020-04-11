@@ -32,9 +32,25 @@ export class HomepageComponent implements OnInit {
 
   constructor( private coronaCountService: CoronaCountServicesService ) { }
 
-  getSliderValue(event, cluster) {
+  setSliderValue(event, cluster) {
     const curcl = this.getCluster(cluster);
-    curcl.displayDaysCount = curcl.historySize - +event.target.value;
+    console.log( event.target.value  , curcl.displayEnd);
+    curcl.displayDaysCount =  +event.target.value;
+  }
+  getSliderValue( cluster, displayDaysCount ) {
+    // const curcl = this.getCluster(cluster);
+    const clusterHistoryRet = this.initClusterValues(cluster);
+    // console.log( cluster );
+
+    if (clusterHistoryRet.length > 0) {
+      const clusterHistory = clusterHistoryRet[0].data;
+      if ( displayDaysCount === 0 ) {
+        return clusterHistory[0].date;
+      } else {
+        return clusterHistory[clusterHistory.length - displayDaysCount - 1].date;
+      }
+    }
+    return '';
   }
 
   chartTotals(): void {
@@ -234,7 +250,9 @@ export class HomepageComponent implements OnInit {
         curcl.displayStart = 0;
         curcl.historySize = r[0].data.length;
         curcl.displayDaysCount = r[0].data.length - 10;
-        console.log( curcl );
+        curcl.displayStart = r[0].data.length - 10;
+        curcl.displayEnd = r[0].data.length;
+        // console.log( curcl );
         const d = new Date();
         curcl.date = (d).getMonth() + 1 + '/' + d.getDate();
         r[0].data = r[0].data.filter(x => x.date !== curcl.date + '/2020');
@@ -272,11 +290,13 @@ export class HomepageComponent implements OnInit {
     const clusterVal = this.getCluster( cluster );
     const clusterHistoryRet = this.initClusterValues(cluster);
     // console.log( cluster );
-    // console.log( curClusters );
+
     if ( clusterHistoryRet.length > 0 ) {
       const clusterHistory = clusterHistoryRet[0];
-      const sz = clusterHistory.data.length - ( clusterHistory.data.length - clusterVal.displayDaysCount ) ;
-      return clusterHistory.data.slice(0, sz );
+      const st = clusterHistory.data.length - clusterVal.displayEnd - 1;
+      const sz = clusterHistory.data.length - clusterVal.displayStart;
+      // console.log( clusterVal.displayStart, clusterVal.displayEnd, sz);
+      return clusterHistory.data.slice(st, sz );
     } else {
       return [];
     }
