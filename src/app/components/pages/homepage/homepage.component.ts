@@ -200,7 +200,7 @@ export class HomepageComponent implements OnInit {
 
           this.clusterValues.push(uscl);
           this.toggleDetail(this.currentEnv.top_cluster_name);
-          // setTimeout(() => this.chartTotals(), 50);
+          setTimeout(() => this.chartTotals(), 50);
       });
     }
 
